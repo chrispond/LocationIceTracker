@@ -1,0 +1,41 @@
+{
+  "name": "location-ice-tracker",
+  "version": "1.0.0",
+  "description": "Tool that tracks weather temperatures for specific locations and provides guesstimates of how thick the ice is.",
+  "main": "src/app.js",
+  "engines": {
+    "node": ">=14.15.0"
+  },
+  "scripts": {
+    "build": "node index --update cross-env NODE_ENV=prod netlify-lambda build --config ./webpack.functions.js src",
+    "dev": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
+    "report": "node index --report",
+    "update": "node index --update"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrispond/LocationIceTracker.git"
+  },
+  "author": "Chris Pond",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrispond/LocationIceTracker/issues"
+  },
+  "homepage": "https://github.com/chrispond/LocationIceTracker#readme",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "faunadb": "^3.0.1",
+    "method-override": "^3.0.0",
+    "netlify-lambda": "^1.6.3",
+    "node-fetch": "^2.6.0",
+    "raw-loader": "^4.0.0",
+    "serverless-http": "^2.3.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
+  }
+}

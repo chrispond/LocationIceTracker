@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en_CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Location Ice Tracker</title>
+    <!-- link rel="stylesheet" type="text/css" href="<%= rootPath %>public/styles/global.css" / -->
+  </head>
+
+  <body>
+    <div id="page-wrapper">
+      <main role="main">
+        <section class="bg-white">
+          <% locationData.forEach(location => { %>
+          <h2>
+            <%= location.name %> | ~<%=
+            utils.iceThickness(location.history.map(date =>
+            date.temp.average))%>"
+          </h2>
+          <ul>
+            <% location.history.forEach(date => { %>
+            <li>
+              <h4 class="date-day" date=""><%= date.date %></h4>
+              <p class="date-ice-freeze">
+                ~<%= date.temp.average > 32 ?
+                `${utils.iceThaw(date.temp.average)} Ice Thaw` :
+                `${utils.iceFreeze(date.temp.average)} Ice Freeze` %>"
+              </p>
+              <p class="date-temp">
+                <span>Daily Temp</span><br /><span class="date-temp-high"
+                  ><%= date.temp.high.toFixed() %>&deg;</span
+                >
+                |
+                <span class="date-tempw-low"
+                  ><%= date.temp.low.toFixed() %>&deg;</span
+                >
+              </p>
+            </li>
+            <% }); %>
+          </ul>
+          <% }); %>
+        </section>
+        <div class="footer">&copy; <%= utils.currentYear %> Chris Pond</div>
+      </main>
+    </div>
+    <!-- script src="<%= rootPath %>public/scripts/global.js"></script -->
+  </body>
+</html>
