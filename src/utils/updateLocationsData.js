@@ -1,4 +1,5 @@
 // Dependancies
+require("dotenv").config();
 const fauna = require("faunadb");
 const getLocationsData = require("./getLocationsData");
 const parseWeatherData = require("./parseWeatherData");

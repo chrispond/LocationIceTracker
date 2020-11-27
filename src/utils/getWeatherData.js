@@ -1,8 +1,4 @@
-// TODO
-/*
-    - Added error handling for missing params and types
-*/
-
+require("dotenv").config();
 const axios = require("axios");
 const requestUrl =
   "https://api.openweathermap.org/data/2.5/onecall/timemachine";
