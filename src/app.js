@@ -1,6 +1,6 @@
+require("dotenv").config();
 // Dependancies
 const bodyParser = require("body-parser");
-require("dotenv").config();
 const express = require("express");
 const locationsDataMiddleware = require("./middleware/locationsData");
 const methodOverride = require("method-override");
