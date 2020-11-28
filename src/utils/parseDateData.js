@@ -1,8 +1,7 @@
 module.exports = (date = new Date()) => {
-  const timeZoneOffsetMilliseconds = date.getTimezoneOffset() * 60000;
-  const dateMilliseconds = date.getTime() - timeZoneOffsetMilliseconds;
-  const epoch = Math.round(dateMilliseconds / 1000);
-  const localTime = new Date(dateMilliseconds);
+  console.log("***", Math.floor(date.getTime() / 1000));
+  const epoch = Math.floor(date.getTime() / 1000);
+  const localTime = new Date(date);
   const pretty = `${localTime.getFullYear()}-${
     localTime.getMonth() + 1
   }-${localTime.getDate()}`;
