@@ -7,10 +7,10 @@
     "node": ">=14.15.0"
   },
   "scripts": {
-    "build": "npm run update && cross-env netlify-lambda build --config ./webpack.functions.js src",
+    "build": "cross-env npm run update && netlify-lambda build --config ./webpack.functions.js src",
     "dev": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
-    "report": "node index --report",
-    "update": "node index --update"
+    "report": "cross-env node index --report",
+    "update": "cross-env node index --update"
   },
   "repository": {
     "type": "git",
