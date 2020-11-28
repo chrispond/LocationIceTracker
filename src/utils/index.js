@@ -39,5 +39,13 @@ module.exports = {
   iceThaw: (temp) => calcThaw(temp).toFixed(1),
   iceThickness: (tempData) => calcThickness([...tempData]).toFixed(1),
   currentYear: new Date().getFullYear(),
-  prettyDay: (date) => "Mon 21st",
+  prettyDay: (date) => {
+    const dateObject = new Date(date);
+
+    return {
+      date: getNumberOrdinal(dateObject.getDate()),
+      day: getStringDay(dateObject.getDay()),
+      month: getStringMonth(dateObject.getMonth()),
+    };
+  },
 };

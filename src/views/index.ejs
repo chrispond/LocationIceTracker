@@ -15,19 +15,42 @@
       <main role="main">
         <section class="bg-white">
           <% locationData.forEach(location => { %>
-          <h2>
+          <h2 style="clear: both">
             <%= location.name %> | ~<%=
             utils.iceThickness(location.history.map(date =>
             date.temp.average))%>"
           </h2>
-          <ul>
-            <% location.history.forEach(date => { %>
-            <li>
-              <h4 class="date-day" date=""><%= date.date %></h4>
+          <ul
+            style="
+              margin: 0;
+              padding: 0;
+              list-style: none;
+              box-sizing: border-box;
+              border-left: solid 1px #ececec;
+              border-top: solid 1px #ececec;
+              overflow: hidden;
+            "
+          >
+            <% location.history.forEach(date => { const prettDay =
+            utils.prettyDay(date.date); %>
+            <li
+              style="
+                width: 14.2%;
+                padding: 15px;
+                float: left;
+                border-bottom: solid 1px #ececec;
+                border-right: solid 1px #ececec;
+                text-align: center;
+                box-sizing: border-box;
+              "
+            >
+              <h4 class="date-day" date="">
+                <%= `${prettDay.month} ${prettDay.day} ${prettDay.date}` %>
+              </h4>
               <p class="date-ice-freeze">
                 ~<%= date.temp.average > 32 ?
-                `${utils.iceThaw(date.temp.average)} Ice Thaw` :
-                `${utils.iceFreeze(date.temp.average)} Ice Freeze` %>"
+                `${utils.iceThaw(date.temp.average)}" Ice Thaw` :
+                `${utils.iceFreeze(date.temp.average)}" Ice Freeze` %>
               </p>
               <p class="date-temp">
                 <span>Daily Temp</span><br /><span class="date-temp-high"

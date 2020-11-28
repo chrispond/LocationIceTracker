@@ -37,6 +37,10 @@
     "serverless-http": "^2.3.2"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-ejs": "0.0.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "2.0.4"
   }
 }
