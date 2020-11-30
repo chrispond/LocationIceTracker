@@ -1,9 +1,9 @@
 module.exports = (date = new Date()) => {
   const epoch = Math.floor(date.getTime() / 1000);
-  const localTime = new Date(date);
-  const pretty = `${localTime.getFullYear()}/${
-    localTime.getMonth() + 1
-  }/${localTime.getDate()}`;
+  const UTCTime = new Date(date.toISOString());
+  const pretty = `${UTCTime.getFullYear()}/${
+    UTCTime.getMonth() + 1
+  }/${UTCTime.getDate()}`;
 
-  return { epoch, pretty, string: localTime };
+  return { epoch, pretty, string: UTCTime };
 };

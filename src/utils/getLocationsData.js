@@ -16,8 +16,8 @@ module.exports = async () => {
       )
     )
     .catch((error) => {
-      // TODO: Need to track if this fails
-      console.error(`Error:getLocationsData():`, error);
+      const errorMessage = `--- ERROR: faunaDB.Get(collection: locations):\n------ Error: ${error.message}\n\n`;
+      console.error(errorMessage);
     });
 
   return locations.data.map((location) => {

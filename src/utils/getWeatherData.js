@@ -6,23 +6,18 @@ const requestUrl =
 module.exports = {
   getData: async (location) => {
     const { date, lat, long } = location;
-    console.log("--- WeatheApi:", date, lat, long);
-    try {
-      return new Promise((resolve, reject) => {
-        axios
-          .post(
-            `${requestUrl}?units=imperial&lat=${lat}&lon=${long}&dt=${date}&appid=${process.env.WEATHER_KEY}`
-          )
-          .then((response) => {
-            resolve(response);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      }).then((locationData) => locationData);
-    } catch (error_1) {
-      // Log An Error
-      process.exit(1);
-    }
+    const postRequestUrl = `${requestUrl}?units=imperial&lat=${lat}&lon=${long}&dt=${date}&appid=${process.env.WEATHER_KEY}`;
+
+    return new Promise((resolve, reject) => {
+      axios
+        .post(postRequestUrl)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          const errorMessage = `--- getWeatherData: Error\n------ postRequestUrl: ${postRequestUrl}\n------ Error: ${error.response.data.message}\n\n`;
+          reject(errorMessage);
+        });
+    }).then((locationData) => locationData);
   },
 };

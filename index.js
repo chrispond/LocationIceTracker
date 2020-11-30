@@ -1,6 +1,6 @@
 const dataFile = "data.json";
 const fs = require("fs");
-const updateLocationData = require("./src/utils/updateLocationsData");
+const updateLocationsData = require("./src/utils/updateLocationsData");
 const weatherApi = require("./src/utils/getWeatherData");
 const { calcThickness } = require("./src/utils/calcFreezeThaw");
 
@@ -23,7 +23,7 @@ const cmdReportData = cliArgs.includes("--report");
 //   return new Promise((resolve, reject) => {
 //     const { history, lat, long, name } = location;
 //     const date = Date.now();
-//     const stringDate = new Date(1606431600000);
+//     const stringDate = new Date(1606690800000);
 //     const prettyDate = `${stringDate.getFullYear()}-${stringDate.getMonth()}-${stringDate.getDate()}`;
 //     const epochDate = Math.round(stringDate.getTime() / 1000);
 //     const dateFound = location.history.filter((day) => day.date === prettyDate)
@@ -73,13 +73,9 @@ const cmdReportData = cliArgs.includes("--report");
 // };
 
 if (cmdUpdateData) {
-  updateLocationData()
-    .then((data) => {
-      console.log("Success: updateLocationData()");
-    })
-    .catch((error) => {
-      console.log("Error: updateLocationData():", error);
-    });
+  updateLocationsData().catch((errorMessage) => {
+    console.log(`--- App Update: Error\n${errorMessage}\n\n`);
+  });
 }
 
 // fs.readFile(dataFile, (error, data) => {
