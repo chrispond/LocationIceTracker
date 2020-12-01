@@ -45,8 +45,8 @@ module.exports = async () => {
               });
           })
           .catch((error) => {
-            const errorMessage = `--- ERROR: getWeatherData:\n------ locationName: ${name}\n\n`;
-            console.error(errorMessage);
+            const errorMessage = `--- ERROR: getWeatherData:\n------ locationName: ${name}\n`;
+            console.error(errorMessage, error, "\n\n");
           });
       });
     })

@@ -4,7 +4,7 @@ module.exports = (weatherData) => {
     current: { temp },
   } = weatherData.data;
 
-  const hourlyTemp = hourly.map((hour) => hour.temp);
+  const hourlyTemp = hourly ? hourly.map((hour) => hour.temp) : [temp];
   const hourlyTempLength = hourlyTemp.length;
   const high = Math.max.apply(null, hourlyTemp);
   const low = Math.min.apply(null, hourlyTemp);
