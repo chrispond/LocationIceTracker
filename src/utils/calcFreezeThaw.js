@@ -1,6 +1,6 @@
 const freezing = 32;
 const freezeRatePerInch = 15;
-const thawRatePerInch = 6;
+const thawRatePerInch = 12;
 
 const calcFreeze = (temp) => (freezing - temp) / freezeRatePerInch;
 const calcThaw = (temp) => (temp - freezing) / thawRatePerInch;

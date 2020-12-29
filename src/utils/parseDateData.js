@@ -5,6 +5,5 @@ module.exports = (date = new Date()) => {
   const pretty = `${localTime.getFullYear()}/${
     localTime.getMonth() + 1
   }/${localTime.getDate()}`;
-  console.log("--- Date:", date, timeZoneOffset, localTime, epoch);
   return { epoch, pretty, string: localTime };
 };

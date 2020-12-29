@@ -1,0 +1,23 @@
+//Font Familys
+$sans-serif-font: 'Jost', sans-serif;
+
+//Font Size
+$font-size-body-mobile: 1.8rem;
+$font-size-body-desktop: 1.8rem;
+$font-size-body-large-desktop: 1.8rem;
+
+//Font Weights
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+
+@mixin sans-serif-font {
+  font-family: $sans-serif-font;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0;
+}
+
+@mixin sans-serif-font-regular {
+  font-family: $sans-serif-font;
+  font-weight: $font-weight-regular;
+  letter-spacing: 0;
+}

@@ -1,0 +1,35 @@
+/*-----
+  MOBILE/SHARED STYLES FIRST
+-----*/
+
+body,
+html {
+  height: 100%;
+}
+
+body {
+  @include sans-serif-font-regular;
+  font-size: $font-size-body-mobile;
+  color: $black;
+  background: #ebebeb;
+}
+
+#page-wrapper {
+  width: 100%;
+  max-width: $desktop-width;
+  margin: 0 auto;
+  padding: $vertical-gap-large 0;
+  overflow: hidden;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+/*-----
+  Phone Breakpoint: MIN
+-----*/
+@include min-width-phone-breakpoint {
+  body {
+    font-size: $font-size-body-desktop;
+  }
+}

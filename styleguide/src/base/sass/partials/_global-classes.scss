@@ -1,0 +1,42 @@
+/*- .font-color-grey
+Changes element color to grey
+-*/
+.font-color-grey {
+  color: $black;
+}
+
+.font-blue {
+  color: $blue;
+}
+
+/*- .font-sans-serif
+Changes element font-family to sans serif
+-*/
+.font-sans-serif {
+  @include sans-serif-font;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.footer {
+  margin-top: $vertical-gap-large;
+  padding: $vertical-gap-small 0 $vertical-gap-small 0;
+  position: relative;
+  @include sans-serif-font;
+  font-size: 1.3rem;
+  text-align: center;
+  border-top: solid 0.4rem $dark-blue;
+  background: #ebebeb;
+}
+
+.a11y {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}

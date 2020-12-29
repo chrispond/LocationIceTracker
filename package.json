@@ -8,8 +8,9 @@
   },
   "scripts": {
     "build": "npm run update && cross-env netlify-lambda build --config ./webpack.functions.js src",
-    "dev": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
-    "report": "cross-env node index --report",
+    "build:styleguide": "cross-env NODE_ENV=prod gulp default",
+    "dev:site": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
+    "dev:styleguide": "gulp default",
     "update": "cross-env node index --update"
   },
   "repository": {
@@ -25,6 +26,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
+    "cypress": "^6.0.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "encoding": "^0.1.13",
@@ -34,13 +36,35 @@
     "netlify-lambda": "^1.6.3",
     "node-fetch": "^2.6.0",
     "raw-loader": "^4.0.0",
+    "rollbar": "^2.19.4",
     "serverless-http": "^2.3.2"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^10.0.0",
+    "browser-sync": "^2.26.7",
+    "browserify": "^16.5.1",
     "cross-env": "^7.0.2",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-ejs": "0.0.2",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "2.0.4"
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-if": "^3.0.0",
+    "gulp-inject-partials": "^1.0.5",
+    "gulp-sass": "^4.1.0",
+    "gulp-template-html": "^0.2.2",
+    "gulp-uglify": "^3.0.2",
+    "gulp-util": "^3.0.8",
+    "node-sass": "^4.14.0",
+    "prettier": "2.0.4",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "prettier": {
+    "proseWrap": "preserve",
+    "singleQuote": true
   }
 }

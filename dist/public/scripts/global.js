@@ -3,12 +3,6 @@
 
 var _scripts = require("../../components/carousel/scripts");
 
-var _scripts2 = require("../../components/trim-paragraph/scripts");
-
-var _scripts3 = require("../../components/trim-string/scripts");
-
-var _scripts4 = require("../../components/shadow/scripts");
-
 /**
  *@name Global Scripts
  *@file This brings all the scripts together, to be used.
@@ -18,9 +12,7 @@ var _scripts4 = require("../../components/shadow/scripts");
  */
 // COMPONENT SCRIPTS
 // GLOBAL OBJECTS
-window.CpCarousel = _scripts.CpCarousel;
-window.CpTrimParagraph = _scripts2.CpTrimParagraph;
-window.CpTrimString = _scripts3.CpTrimString; //Carousel Initialization
+window.CpCarousel = _scripts.CpCarousel; //Carousel Initialization
 
 var cpCarousels = document.querySelectorAll('.cp-carousel');
 var cpCarouselsLength = cpCarousels.length;
@@ -28,19 +20,19 @@ var cpCarouselsLength = cpCarousels.length;
 var cpCarouselOptionsHandler = function cpCarouselOptionsHandler(carouselWidth) {
   if (carouselWidth <= 480) {
     return {
-      slidesInView: 1,
+      slidesInView: 2.5,
       isInfinit: false
     };
   } else if (carouselWidth > 480 && carouselWidth <= 960) {
     return {
-      slidesInView: 2.5,
-      isInfinit: true
+      slidesInView: 3.5,
+      isInfinit: false
     };
   }
 
   return {
-    slidesInView: 3.5,
-    isInfinit: true
+    slidesInView: 5.5,
+    isInfinit: false
   };
 };
 
@@ -91,9 +83,10 @@ if (cpCarouselsLength > 0) {
       var options = slide.options,
           slideElement = slide.slideElement,
           slideIndex = slide.slideIndex;
+      console.log('*****', slide, slideElement);
 
       if (!options.isInfinit) {
-        updateControls(nextButton, prevButton, slideElement.parentElement.children.length, slideIndex);
+        updateControls(nextButton, prevButton, carouselElement.querySelectorAll('.cp-carousel-slider-slide').length - options.slidesInView, slideIndex);
       } else {
         enableButton(nextButton);
         enableButton(prevButton);
@@ -117,69 +110,9 @@ if (cpCarouselsLength > 0) {
   for (var i = 0; i < cpCarouselsLength; i++) {
     _loop(i);
   }
-} //Trim Paragraph Initialization
-
-
-var cpTrimmedParagraphs = document.querySelectorAll('.cp-trim-paragraph');
-var cpTrimmedParagraphsLength = cpTrimmedParagraphs.length;
-
-if (cpTrimmedParagraphsLength > 0) {
-  for (var _i = 0; _i < cpTrimmedParagraphsLength; _i++) {
-    var item = cpTrimmedParagraphs[_i];
-    new _scripts2.CpTrimParagraph(item, 150);
-  }
-} //Trim String Initialization
-
-
-var cpTrimmedStrings = document.querySelectorAll('.cp-trim-string');
-var cpTrimmedStringsLength = cpTrimmedStrings.length;
-
-if (cpTrimmedStringsLength > 0) {
-  for (var _i2 = 0; _i2 < cpTrimmedStringsLength; _i2++) {
-    var _item = cpTrimmedStrings[_i2];
-    new _scripts3.CpTrimString(_item);
-  }
-} //Shadow Initialization
-
-
-var shadowElements = document.querySelectorAll('.shadow');
-var shadowElementsLength = shadowElements.length;
-var animateData = {
-  focus: {
-    // animateFocus: {
-    opacity: 0.2,
-    point: 0.25,
-    rotate: 0.015
-  },
-  inFocus: {
-    opacity: 0.1,
-    point: 0.2,
-    rotate: 0
-  },
-  outFocus: {
-    opacity: 0.1,
-    point: 1,
-    rotate: 0
-  },
-  units: {
-    rotate: 'turn',
-    // deg, turn, rad
-    translateX: '%',
-    // %, px, rem, em
-    translateY: '%' // %, px, rem, em
-
-  }
-};
-
-if (shadowElementsLength > 0) {
-  for (var _i3 = 0; _i3 < shadowElementsLength; _i3++) {
-    var _item2 = shadowElements[_i3].querySelector('.shadow-box');
-
-    new _scripts4.InViewAnimate(_item2, animateData);
-  }
 }
 
-},{"../../components/carousel/scripts":2,"../../components/shadow/scripts":3,"../../components/trim-paragraph/scripts":4,"../../components/trim-string/scripts":5}],2:[function(require,module,exports){
+},{"../../components/carousel/scripts":2}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -265,11 +198,13 @@ var CpCarousel = /*#__PURE__*/function () {
     this.wrapperWidth = 0;
     this.slideQuotient = this.options.slidesInView / this.totalSlides;
     this.sliderWidth = this.wrapperWidth * this.totalSlides;
-    this.slideWidth = 100 / this.showSlides; //Bind Event Methods
+    this.slideWidth = 100 / this.showSlides;
+    this.carouselResizeTimeout; //Bind Event Methods
 
     this._onClick = this._onClick.bind(this);
     this._onDown = this._onDown.bind(this);
     this._onMove = this._onMove.bind(this);
+    this._onResize = this._onResize.bind(this);
     this._onTouch = this._onTouch.bind(this);
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
     this._onUp = this._onUp.bind(this);
@@ -302,6 +237,7 @@ var CpCarousel = /*#__PURE__*/function () {
       this.slider.addEventListener('mouseup', this._onUp);
       this.slider.addEventListener('touchend', this._onUp);
       this.slider.addEventListener('transitionend', this._onTransitionEnd);
+      window.addEventListener('resize', this._onResize);
     }
   }, {
     key: "_removeEvents",
@@ -316,6 +252,7 @@ var CpCarousel = /*#__PURE__*/function () {
       this.slider.removeEventListener('mouseup', this._onUp);
       this.slider.removeEventListener('touchend', this._onUp);
       this.slider.removeEventListener('transitionend', this._onTransitionEnd);
+      window.removeEventListener('resize', this._onResize);
     } // _onSlideFocus(event) {
     //   if (!this.mouseDown && !touchstart) {
     //     this.currentSlide = [...this.slides].indexOf(event.target);
@@ -653,8 +590,8 @@ var CpCarousel = /*#__PURE__*/function () {
 
       if (this.mouseDown && this.mousePosition.x === 0 && typeof this.startCallBack === 'function') {
         this.startCallBack({
-          slideElement: this.slides[this.currentSlide],
-          slideIndex: this._currentIndexBuffed(this.currentSlide)
+          slideElement: this.slides[Math.ceil(this.currentSlide)],
+          slideIndex: this._currentIndexBuffed(Math.ceil(this.currentSlide))
         });
       } // Only update the position of the slides if mouseDown/touchStart & moving horizontal
 
@@ -684,8 +621,8 @@ var CpCarousel = /*#__PURE__*/function () {
         // Fire callback
         if (typeof this.startCallBack === 'function') {
           this.startCallBack({
-            slideElement: this.slides[this.currentSlide],
-            slideIndex: this._currentIndexBuffed(this.currentSlide)
+            slideElement: this.slides[Math.ceil(this.currentSlide)],
+            slideIndex: this._currentIndexBuffed(Math.ceil(this.currentSlide))
           });
         }
 
@@ -717,8 +654,8 @@ var CpCarousel = /*#__PURE__*/function () {
         // Fire callback
         if (typeof this.startCallBack === 'function') {
           this.startCallBack({
-            slideElement: this.slides[this.currentSlide],
-            slideIndex: this._currentIndexBuffed(this.currentSlide)
+            slideElement: this.slides[Math.ceil(this.currentSlide)],
+            slideIndex: this._currentIndexBuffed(Math.ceil(this.currentSlide))
           });
         }
 
@@ -731,6 +668,25 @@ var CpCarousel = /*#__PURE__*/function () {
           this._updateSliderPosition(targetSlidePosition);
         }
       }
+    }
+  }, {
+    key: "_onResize",
+    value: function _onResize(event) {
+      var _this3 = this;
+
+      console.log('*****', !this.carouselResizeTimeout, this.slider.style.minWidth);
+
+      if (!this.carouselResizeTimeout) {
+        this.slider.style.minWidth = "".concat(this.slider.clientWidth, "px");
+      }
+
+      clearTimeout(this.carouselResizeTimeout);
+      this.carouselResizeTimeout = setTimeout(function () {
+        // Remove min-width
+        _this3.slider.style.removeProperty('min-width');
+
+        _this3.carouselResizeTimeout = null;
+      }, 1000);
     }
     /**
      * @name _onTouch
@@ -783,8 +739,8 @@ var CpCarousel = /*#__PURE__*/function () {
       if (typeof this.stopCallBack === 'function') {
         this.stopCallBack({
           options: _objectSpread({}, this.options),
-          slideElement: this.slides[this.currentSlide],
-          slideIndex: this._currentIndexBuffed(this.currentSlide)
+          slideElement: this.slides[Math.ceil(this.currentSlide)],
+          slideIndex: this._currentIndexBuffed(Math.ceil(this.currentSlide))
         });
       }
 
@@ -864,13 +820,13 @@ var CpCarousel = /*#__PURE__*/function () {
   }, {
     key: "_setDimensions",
     value: function _setDimensions() {
-      var _this3 = this;
+      var _this4 = this;
 
       // Set slider width
       this.slider.style.width = "calc((".concat(this.totalSlides, " / ").concat(this.showSlides, ") * 100%)"); // Set slide widths
 
       this.slides.forEach(function (slide) {
-        slide.style.width = "calc(100% / ".concat(_this3.totalSlides, ")");
+        slide.style.width = "calc(100% / ".concat(_this4.totalSlides, ")");
       }); // Position carousel to currentSlide
 
       this._updateSliderPosition(this.carouselPosition);
@@ -953,7 +909,7 @@ var CpCarousel = /*#__PURE__*/function () {
   }, {
     key: "updateOptions",
     value: function updateOptions(newOptions) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.animateTransition = false;
       var currentSlideIndex = this.currentSlide;
@@ -982,7 +938,7 @@ var CpCarousel = /*#__PURE__*/function () {
 
 
       Object.keys(newOptions).forEach(function (option) {
-        _this4.options[option] = newOptions[option];
+        _this5.options[option] = newOptions[option];
       });
 
       if (!this.hasEnoughSlides) {
@@ -1030,548 +986,5 @@ var CpCarousel = /*#__PURE__*/function () {
 }();
 
 exports.CpCarousel = CpCarousel;
-
-},{}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InViewAnimate = void 0;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-/**
- *@name Shadow Scripts
- *@file
- *@copyright ChrisPond.com
- *@author Chris Pond
- *@version 1.0.0
- */
-
-/**
- * @name Shadow
- * @description Triggers/applies motion to the shadow component
- * @param {object} element - Required: DOM element to apply the shadow to
- * @example
- * const myShadow = new Shadow(document.querySelector('.my-shadow'));
- **/
-
-/*
-  - Public update data method
-  - streamline code for the animate stuff
-  - add error check for missing data
- */
-var InViewAnimate = /*#__PURE__*/function () {
-  function InViewAnimate(element, data) {
-    _classCallCheck(this, InViewAnimate);
-
-    // Element
-    this.element = element; // Data
-
-    this.data = data;
-    this.startData = this.data.inFocus.point || 0;
-    this.endData = this.data.outFocus.point || 1; // Events
-
-    this._onResize = this._onResize.bind(this);
-    this._onScroll = this._onScroll.bind(this);
-    this._animateElement = this._animateElement.bind(this);
-    this.transformValueMethod = {
-      perspective: function perspective(value, unit) {
-        return "perspective(".concat(value).concat(unit, ")");
-      },
-      rotate: function rotate(value, unit) {
-        return "rotate(".concat(value).concat(unit, ")");
-      },
-      rotateX: function rotateX(value, unit) {
-        return "rotateX(".concat(value).concat(unit, ")");
-      },
-      rotateY: function rotateY(value, unit) {
-        return "rotateY(".concat(value).concat(unit, ")");
-      },
-      rotateZ: function rotateZ(value, unit) {
-        return "rotateZ(".concat(value).concat(unit, ")");
-      },
-      scale: function scale(value) {
-        return "scale(".concat(value, ")");
-      },
-      scaleX: function scaleX(value) {
-        return "scaleX(".concat(value, ")");
-      },
-      scaleY: function scaleY(value) {
-        return "scaleY(".concat(value, ")");
-      },
-      scaleZ: function scaleZ(value) {
-        return "scaleZ(".concat(value, ")");
-      },
-      skewX: function skewX(value) {
-        return "skewX(".concat(value).concat(unit, ")");
-      },
-      skewY: function skewY(value) {
-        return "skewY(".concat(value).concat(unit, ")");
-      },
-      translateX: function translateX(value, unit) {
-        return "translateX(".concat(value).concat(unit, ")");
-      },
-      translateY: function translateY(value, unit) {
-        return "translateY(".concat(value).concat(unit, ")");
-      },
-      translateZ: function translateZ(value, unit) {
-        return "translateZ(".concat(value).concat(unit, ")");
-      }
-    };
-
-    this._addEvents();
-
-    this._setProperties();
-  }
-
-  _createClass(InViewAnimate, [{
-    key: "_animateElement",
-    value: function _animateElement() {
-      var _this = this;
-
-      this.isScrolling = false;
-
-      this._setElementProperties();
-
-      this._setFocusProperties(); //Start focus
-
-
-      var animateInPercent = (this.elementDistance - this.focusPoint) / this.inFocusDiff;
-      var animateOutPercent = (this.elementDistance - this.focusPoint) / this.outFocusDiff;
-      var transformStyles = '';
-
-      if (animateOutPercent > 0) {
-        var isStill = animateOutPercent >= 1;
-        Object.keys(this.data.outFocus).forEach(function (key) {
-          if (key === 'point') {
-            return;
-          }
-
-          var value = _this.data.outFocus[key];
-
-          var animateValue = _this._calcAnimation(animateOutPercent, _this.data.focus[key], value);
-
-          var isTransformValue = _this.transformValueMethod[key];
-          var updateValue = isStill ? value : animateValue;
-
-          if (isTransformValue) {
-            transformStyles += _this.transformValueMethod[key](updateValue, _this.data.units[key]);
-          } else {
-            _this.element.style[key] = updateValue;
-          }
-        });
-      } else if (animateInPercent > 0) {
-        var _isStill = animateInPercent >= 1;
-
-        var inPercent = 1 - animateInPercent; // isStill, inPercent, data, type
-
-        Object.keys(this.data.inFocus).forEach(function (key) {
-          if (key === 'point') {
-            return;
-          }
-
-          var value = _this.data.inFocus[key];
-
-          var animateValue = _this._calcAnimation(inPercent, value, _this.data.focus[key]);
-
-          var isTransformValue = _this.transformValueMethod[key];
-          var updateValue = _isStill ? value : animateValue;
-
-          if (isTransformValue) {
-            transformStyles += _this.transformValueMethod[key](updateValue, _this.data.units[key]);
-          } else {
-            _this.element.style[key] = updateValue;
-          }
-        });
-      }
-
-      this.element.style.webkitTransform = transformStyles;
-      this.element.style.transform = transformStyles;
-    }
-    /**
-    @name _addEvents
-    @description Handles iniating event listeners
-    @memberof InViewTrigger
-    @method
-    @private
-    */
-
-  }, {
-    key: "_addEvents",
-    value: function _addEvents() {
-      window.addEventListener('resize', this._onResize);
-      document.addEventListener('scroll', this._onScroll);
-    }
-  }, {
-    key: "_calcAnimation",
-    value: function _calcAnimation(animate, from, to) {
-      if (from > to) {
-        var difference = from - to;
-        return from - difference * animate;
-      } else {
-        var _difference = to - from;
-
-        return from + _difference * animate;
-      }
-    }
-    /**
-    @name _onReszie
-    @description Recalculates scroll position & inFocus position
-    @memberof InViewTrigger
-    @method
-    @private
-    */
-
-  }, {
-    key: "_onResize",
-    value: function _onResize() {
-      var _this2 = this;
-
-      // Initiate setTimeout to determine when resizing is over
-      if (this.resizeTimer) {
-        window.clearTimeout(this.resizeTimer);
-      }
-
-      this.resizeTimer = window.setTimeout(function () {
-        _this2._setProperties();
-
-        _this2.resizeTimer = undefined;
-      }, 400);
-    }
-  }, {
-    key: "_setElementProperties",
-    value: function _setElementProperties() {
-      var elementRect = this.element.getBoundingClientRect();
-      this.elementDistance = elementRect.top;
-      this.elementHeight = elementRect.height;
-      this.elementMiddle = this.elementHeight / 2;
-    }
-  }, {
-    key: "_setFocusProperties",
-    value: function _setFocusProperties() {
-      this.windowHeight = window.innerHeight;
-      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      this.inFocusPoint = this.windowHeight * (1 - this.startData) - this.elementMiddle;
-      this.outFocusPoint = this.windowHeight * (1 - this.endData) - this.elementMiddle;
-      this.focusPoint = this.windowHeight * this.data.focus.point - this.elementMiddle;
-      this.inFocusDiff = this.inFocusPoint - this.focusPoint;
-      this.outFocusDiff = this.outFocusPoint - this.focusPoint;
-    }
-  }, {
-    key: "_setProperties",
-    value: function _setProperties() {
-      this.resizeTimer = undefined;
-      this.isScrolling = false;
-
-      this._setElementProperties();
-
-      this._setFocusProperties();
-
-      this._onScroll();
-    }
-  }, {
-    key: "_removeEvents",
-    value: function _removeEvents() {
-      window.removeEventListener('resize', this._onResize);
-      document.removeEventListener('scroll', this._onScroll);
-    }
-    /**
-    @name _onScroll
-    @description Tracks scroll position
-    @memberof InViewTrigger
-    @method
-    @private
-    */
-
-  }, {
-    key: "_onScroll",
-    value: function _onScroll() {
-      // Updated Properties
-      if (!this.isScrolling) {
-        window.requestAnimationFrame(this._animateElement);
-        this.isScrolling = true;
-      }
-    }
-  }]);
-
-  return InViewAnimate;
-}();
-
-exports.InViewAnimate = InViewAnimate;
-
-},{}],4:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CpTrimParagraph = exports.errors = void 0;
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-// Custom errors for this component
-var errors = {
-  elementRequired: 'CpTrimParagraph requires element paramter to be defined',
-  elementObject: 'CpTrimParagraph requires element be an object'
-};
-/**
- * @name CpTrimParagraph
- * @description
- * @param {object} element - Required: DOM element
- * @param {object} textLimit - Optional: Character limit. Default is 270.
- * @example
- * new CpTrimParagraph(document.querySelector('.cp-trim-paragraph'));
- */
-
-exports.errors = errors;
-
-var CpTrimParagraph = /*#__PURE__*/function () {
-  function CpTrimParagraph(element, textLimit) {
-    _classCallCheck(this, CpTrimParagraph);
-
-    // Validate 'element' exists and is an object; otherwise error
-    if (!element) {
-      throw new Error(errors.elementRequired);
-    } else if (_typeof(element) !== 'object') {
-      throw new Error(errors.elementObject);
-    } //Param
-
-
-    this.element = element;
-    this.textLimit = this.textLimit = typeof textLimit !== 'number' ? 270 : textLimit; //DOM Elements
-
-    this.readMoreLink = this._buildReadMore(); //Properties
-
-    this.originalText = this.element.innerHTML; //Bind Event Methods
-
-    this._toggleTextBound = this._toggleText.bind(this); //Init
-
-    this._trimParagraph();
-  }
-  /**
-   * @name _addEvents
-   * @description Handles adding event listeners for CpTrimParagraph
-   * @memberof CpTrimParagraph
-   * @method
-   * @private
-   */
-
-
-  _createClass(CpTrimParagraph, [{
-    key: "_addEvents",
-    value: function _addEvents() {
-      //Click handler for read more link
-      this.readMoreLink.addEventListener('click', this._toggleTextBound);
-    }
-    /**
-     * @name _buildReadMore
-     * @description Builds a read more link
-     * @memberof CpTrimParagraph
-     * @method
-     * @private
-     */
-
-  }, {
-    key: "_buildReadMore",
-    value: function _buildReadMore() {
-      var link = document.createElement('a');
-      link.setAttribute('href', '#');
-      link.setAttribute('data-gtm-event-cta', 'read-more');
-      link.classList.add('cp-trim-paragraph-read-more');
-      link.innerText = 'Read more';
-      return link;
-    }
-    /**
-     * @name destroy
-     * @description Handles destroying an instance of CpTrimParagraph
-     * @memberof CpTrimParagraph
-     * @method
-     * @public
-     */
-
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      this._removeEvents();
-
-      this.readMoreLink.remove();
-      this.element.innerHTML = this.originalText;
-    }
-    /**
-     * @name _removeEvents
-     * @description Handles removing event listeners for CpTrimParagraph
-     * @memberof CpTrimParagraph
-     * @method
-     * @private
-     */
-
-  }, {
-    key: "_removeEvents",
-    value: function _removeEvents() {
-      //Click handler for read more link
-      this.readMoreLink.removeEventListener('click', this._toggleTextBound);
-    }
-    /**
-     * @name _toggleText
-     * @description Handles hiding/showing trimmed paragraph text and updating read more link text
-     * @memberof CpTrimParagraph
-     * @method
-     * @private
-     */
-
-  }, {
-    key: "_toggleText",
-    value: function _toggleText(event) {
-      event.preventDefault();
-
-      if (this.element.classList.contains('show')) {
-        this.element.classList.remove('show');
-        this.readMoreLink.innerText = 'Read more';
-      } else {
-        this.element.classList.add('show');
-        this.readMoreLink.innerText = 'Hide text';
-      }
-    }
-    /**
-     * @name _trimParagraph
-     * @description Trims paragraph if it exceeds the max text limit
-     * @memberof CpTrimParagraph
-     * @method
-     * @private
-     */
-
-  }, {
-    key: "_trimParagraph",
-    value: function _trimParagraph() {
-      var originalTextLength = this.originalText.length; //Get text that fits within text limit
-
-      var limitText = this.originalText.substr(0, this.textLimit); //Adjust trimmed text by making sure we don't cut the middle of a word
-
-      var trimText = this.originalText.substr(Math.min(limitText.length, limitText.lastIndexOf(' '))); //Create new paragraph and wrap trimmed text in a span element so we can hide it
-
-      var newParagraph = this.originalText.replace(trimText, "<span class=\"cp-trim-paragraph-ellipsis\"></span><span class=\"cp-trim-paragraph-extra\">".concat(trimText, "</span><br /> ")); //Only the paragraph if it exceeds the text limit
-
-      if (originalTextLength > this.textLimit) {
-        this.element.innerHTML = newParagraph;
-        this.element.appendChild(this.readMoreLink);
-
-        this._addEvents();
-      }
-    }
-  }]);
-
-  return CpTrimParagraph;
-}();
-
-exports.CpTrimParagraph = CpTrimParagraph;
-
-},{}],5:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CpTrimString = exports.errors = void 0;
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-// Custom errors for this component
-var errors = {
-  elementRequired: 'CpTrimString requires element paramter to be defined',
-  elementObject: 'CpTrimString requires element be an object'
-};
-/**
- * @name CpTrimString
- * @description
- * @param {object} element - Required: DOM element
- * @param {object} textLimit - Optional: Character limit. Default is 50.
- * @example
- * new CpTrimString(document.querySelector('.cp-trim-string'));
- */
-
-exports.errors = errors;
-
-var CpTrimString = /*#__PURE__*/function () {
-  function CpTrimString(element, textLimit) {
-    _classCallCheck(this, CpTrimString);
-
-    // Validate 'element' exists and is an object; otherwise error
-    if (!element) {
-      throw new Error(errors.elementRequired);
-    } else if (_typeof(element) !== 'object') {
-      throw new Error(errors.elementObject);
-    } //Param
-
-
-    this.element = element;
-    this.textLimit = this.textLimit = typeof textLimit !== 'number' ? 50 : textLimit; //Properties
-
-    this.originalText = this.element.innerHTML; //Init
-
-    this._trimString();
-  }
-  /**
-   * @name destroy
-   * @description Handles destroying an instance of CpTrimString
-   * @memberof CpTrimString
-   * @method
-   * @public
-   */
-
-
-  _createClass(CpTrimString, [{
-    key: "destroy",
-    value: function destroy() {
-      this.element.innerHTML = this.originalText;
-      this.element.classList.remove('trimmed');
-    }
-    /**
-     * @name _trimString
-     * @description Trims string if it exceeds the max text limit
-     * @memberof CpTrimString
-     * @method
-     * @private
-     */
-
-  }, {
-    key: "_trimString",
-    value: function _trimString() {
-      var originalTextLength = this.originalText.length; //Get text that fits within text limit
-
-      var limitText = this.originalText.substr(0, this.textLimit); //Adjust trimmed text by making sure we don't cut the middle of a word
-
-      var trimText = this.originalText.substr(Math.min(limitText.length, limitText.lastIndexOf(' '))); //Remove extra text
-
-      var newParagraph = this.originalText.replace(trimText, ''); //Only trim the string if it exceeds the text limit
-
-      if (originalTextLength > this.textLimit) {
-        this.element.innerHTML = newParagraph;
-        this.element.classList.add('trimmed');
-      }
-    }
-  }]);
-
-  return CpTrimString;
-}();
-
-exports.CpTrimString = CpTrimString;
 
 },{}]},{},[1]);
