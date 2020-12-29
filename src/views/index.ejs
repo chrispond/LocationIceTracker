@@ -35,9 +35,9 @@
                       </h3>
                       <p class="ice-formation">
                       <% if (date.temp.average > 32) { %>
-                        -<%= utils.iceThaw(date.temp.average)%> <span class="a11y">Ice loss</span>
+                        -<%= utils.iceThaw(date.temp.average)%>" <span class="a11y">Ice loss</span>
                       <% } else { %>
-                        +<%= utils.iceFreeze(date.temp.average)%> <span class="a11y">Ice formation</span>
+                        +<%= utils.iceFreeze(date.temp.average)%>" <span class="a11y">Ice formation</span>
                       <% } %>
                       </p>
                       <h4 class="temp-title">Daily Temps</h4>
