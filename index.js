@@ -1,78 +1,78 @@
-const dataFile = 'data.json';
-const fs = require('fs');
-// const updateLocationsData = require("./src/utils/updateLocationsData");
-const weatherApi = require('./src/utils/getWeatherData');
-const { calcThickness } = require('./src/utils/calcFreezeThaw');
+// const dataFile = 'data.json';
+// const fs = require('fs');
+const updateLocationsData = require('./src/utils/updateLocationsData');
+// const weatherApi = require('./src/utils/getWeatherData');
+// const { calcThickness } = require('./src/utils/calcFreezeThaw');
 
 const cliArgs = process.argv.slice(2);
 const cmdUpdateData = cliArgs.includes('--update');
-const cmdReportData = cliArgs.includes('--report');
+// const cmdReportData = cliArgs.includes('--report');
 
-const updateLocationData = async (location) => {
-  return new Promise((resolve, reject) => {
-    const { history, lat, long, name } = location;
-    const date = Date.now();
-    const stringDate = new Date(1606950000000);
-    const prettyDate = `${stringDate.getFullYear()}-${stringDate.getMonth()}-${stringDate.getDate()}`;
-    const epochDate = Math.round(stringDate.getTime() / 1000);
-    const dateFound = location.history.filter((day) => day.date === prettyDate)
-      .length;
+// const updateLocationData = async (location) => {
+//   return new Promise((resolve, reject) => {
+//     const { history, lat, long, name } = location;
+//     const date = Date.now();
+//     const stringDate = new Date(1609282800000);
+//     const prettyDate = `${stringDate.getFullYear()}-${stringDate.getMonth()}-${stringDate.getDate()}`;
+//     const epochDate = Math.round(stringDate.getTime() / 1000);
+//     const dateFound = location.history.filter((day) => day.date === prettyDate)
+//       .length;
 
-    if (dateFound) {
-      resolve(location);
-    }
+//     if (dateFound) {
+//       resolve(location);
+//     }
 
-    weatherApi
-      .getData({ date: epochDate, lat, long })
-      .then((data) => {
-        const weatherData = data.data;
-        const currentTemp = weatherData.current.temp;
-        const hourlyTemp = weatherData.hourly.map((hour) => hour.temp);
-        const hourlTempLength = hourlyTemp.length;
-        const high = Math.max.apply(null, [...hourlyTemp]);
-        const low = Math.min.apply(null, [...hourlyTemp]);
-        const average =
-          hourlyTemp.reduce(
-            (accumulator, currentValue) => accumulator + currentValue,
-            currentTemp
-          ) / hourlTempLength;
-        const newTempData = { date: prettyDate, temp: { average, high, low } };
-        const newHistory = [...history, newTempData];
+//     weatherApi
+//       .getData({ date: epochDate, lat, long })
+//       .then((data) => {
+//         const weatherData = data.data;
+//         const currentTemp = weatherData.current.temp;
+//         const hourlyTemp = weatherData.hourly.map((hour) => hour.temp);
+//         const hourlTempLength = hourlyTemp.length;
+//         const high = Math.max.apply(null, [...hourlyTemp]);
+//         const low = Math.min.apply(null, [...hourlyTemp]);
+//         const average =
+//           hourlyTemp.reduce(
+//             (accumulator, currentValue) => accumulator + currentValue,
+//             currentTemp
+//           ) / hourlTempLength;
+//         const newTempData = { date: prettyDate, temp: { average, high, low } };
+//         const newHistory = [...history, newTempData];
 
-        resolve({ history: newHistory, lat, long, name });
-      })
-      .catch((error) => {
-        // Log an error
-        reject(error);
-      });
-  });
-};
-
-const updateData = (locationWeatherdata) => {
-  const newlocationWeatherdata = locationWeatherdata.map((location) => {
-    return updateLocationData(location).then((a) => {
-      return a;
-      // Log an error
-    });
-  });
-
-  Promise.all(newlocationWeatherdata).then((newData) => {
-    fs.writeFileSync(dataFile, JSON.stringify(newData));
-  });
-};
-
-// if (cmdUpdateData) {
-//   updateLocationsData().catch((errorMessage) => {
-//     console.log(`--- App Update: Error\n${errorMessage}\n\n`);
+//         resolve({ history: newHistory, lat, long, name });
+//       })
+//       .catch((error) => {
+//         // Log an error
+//         reject(error);
+//       });
 //   });
-// }
+// };
 
-fs.readFile(dataFile, (error, data) => {
-  const locationWeatherdata = JSON.parse(data);
+// const updateData = (locationWeatherdata) => {
+//   const newlocationWeatherdata = locationWeatherdata.map((location) => {
+//     return updateLocationData(location).then((a) => {
+//       return a;
+//       // Log an error
+//     });
+//   });
 
-  if (cmdUpdateData) {
-    updateData(locationWeatherdata);
-  } else if (cmdReportData) {
-    reportIceThickness(locationWeatherdata);
-  }
-});
+//   Promise.all(newlocationWeatherdata).then((newData) => {
+//     fs.writeFileSync(dataFile, JSON.stringify(newData));
+//   });
+// };
+
+if (cmdUpdateData) {
+  updateLocationsData().catch((errorMessage) => {
+    console.log(`--- App Update: Error\n${errorMessage}\n\n`);
+  });
+}
+
+// fs.readFile(dataFile, (error, data) => {
+//   const locationWeatherdata = JSON.parse(data);
+
+//   if (cmdUpdateData) {
+//     updateData(locationWeatherdata);
+//   } else if (cmdReportData) {
+//     reportIceThickness(locationWeatherdata);
+//   }
+// });
