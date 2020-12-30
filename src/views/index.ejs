@@ -17,16 +17,17 @@
           <% locationData.forEach(location => { 
             const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
           %>
-            <h2 style="clear: both">
-              <%= location.name %> | ~<%= utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset)%>"
+            <h2>
+              <%= location.name %>
             </h2>
+            <p>&#8776;<%= utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset)%>&Prime; ice thickeness</p>
             <div class="cp-carousel">
               <div class="cp-carousel-wrapper">
                 <ul class="cp-carousel-slider">
                   <% descendingHistory.forEach(date => {
                     const prettDay = utils.prettyDay(date.date); %>
                   
-                  <li aria-label="Nov 15th, 2020 ice report" role="listitem" class="cp-carousel-slider-slide">
+                  <li aria-label="<%= `${prettDay.day} ${prettDay.month} ${prettDay.date}, ${prettDay.year}`%> ice report" role="listitem" class="cp-carousel-slider-slide">
                     <article>
                       <h3>
                         <time datetime="<%= date.date %>">
@@ -35,9 +36,9 @@
                       </h3>
                       <p class="ice-formation">
                       <% if (date.temp.average > 32) { %>
-                        -<%= utils.iceThaw(date.temp.average)%>" <span class="a11y">Ice loss</span>
+                        -<%= utils.iceThaw(date.temp.average)%>&Prime; <span class="a11y">Inches of ice loss</span>
                       <% } else { %>
-                        +<%= utils.iceFreeze(date.temp.average)%>" <span class="a11y">Ice formation</span>
+                        +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
                       <% } %>
                       </p>
                       <h4 class="temp-title">Daily Temps</h4>

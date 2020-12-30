@@ -8,9 +8,9 @@
   },
   "scripts": {
     "build": "npm run update && cross-env netlify-lambda build --config ./webpack.functions.js src",
-    "build:styleguide": "cross-env NODE_ENV=prod gulp default",
+    "build:styleguide": "cross-env NODE_ENV=prod gulp build",
     "dev:site": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
-    "dev:styleguide": "gulp default",
+    "dev:styleguide": "gulp serve",
     "update": "cross-env node index --update"
   },
   "repository": {

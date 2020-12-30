@@ -98,8 +98,8 @@ h2 {
   margin-top: $vertical-gap-large;
   margin-bottom: calc(#{$vertical-gap-medium-desktop} - 1.2rem);
   @include sans-serif-font;
-  font-size: 1.8rem;
-  text-transform: uppercase;
-  line-height: 2.4rem;
-  color: $blue;
+  font-size: 4rem;
+  text-transform: capitalize;
+  line-height: 4rem;
+  color: $black;
 }

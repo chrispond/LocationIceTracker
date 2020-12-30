@@ -69,15 +69,15 @@ const scriptsCompile = (callback) => {
     .pipe(source('global.js'))
     .pipe(buffer())
     .pipe(gulpif(env === env.PROD, uglify()))
-    .pipe(dest(`${outputDir}scripts/`));
-  callback();
+    .pipe(dest(`${outputDir}scripts/`))
+    .on('end', () => callback());
 };
 
 const stylesCompile = (callback) => {
   src(`${srcDir}base/sass/global.scss`)
     .pipe(sass({ outputStyle: sassOutput }).on('error', sass.logError))
-    .pipe(dest(`${outputDir}styles/`));
-  callback();
+    .pipe(dest(`${outputDir}styles/`))
+    .on('end', () => callback());
 };
 
 const watchFiles = (callback) => {
@@ -87,7 +87,8 @@ const watchFiles = (callback) => {
   callback();
 };
 
-exports.default = series(
+exports.build = series(stylesCompile, scriptsCompile);
+exports.serve = series(
   parallel(htmlBuild, stylesCompile, scriptsCompile),
   localServe,
   watchFiles
