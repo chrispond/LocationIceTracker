@@ -17,21 +17,19 @@
           <% locationData.forEach(location => { 
             const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
           %>
-            <h2>
-              <%= location.name %>
-            </h2>
+            <h2><%= location.name %></h2>
             <p>&#8776;<%= utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset)%>&Prime; ice thickeness</p>
             <div class="cp-carousel">
               <div class="cp-carousel-wrapper">
                 <ul class="cp-carousel-slider">
                   <% descendingHistory.forEach(date => {
-                    const prettDay = utils.prettyDay(date.date); %>
+                    const prettDate = utils.prettyDate(date.date); %>
                   
-                  <li aria-label="<%= `${prettDay.day} ${prettDay.month} ${prettDay.date}, ${prettDay.year}`%> ice report" role="listitem" class="cp-carousel-slider-slide">
+                  <li aria-label="<%= `${ prettDate.day} ${ prettDate.month} ${ prettDate.date}, ${ prettDate.year}`%> ice report" role="listitem" class="cp-carousel-slider-slide">
                     <article>
                       <h3>
                         <time datetime="<%= date.date %>">
-                          <%= `${prettDay.month} ${prettDay.year}`%><br /><%= `${prettDay.day} ${prettDay.date}`%>
+                          <%= `${ prettDate.month} ${ prettDate.year}`%><br /><%= `${ prettDate.day} ${ prettDate.date}`%>
                         </time>
                       </h3>
                       <p class="ice-formation">

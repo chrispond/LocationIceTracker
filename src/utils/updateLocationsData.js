@@ -1,10 +1,10 @@
 // Dependancies
-require("dotenv").config();
-const fauna = require("faunadb");
-const getLocationsData = require("./getLocationsData");
-const parseWeatherData = require("./parseWeatherData");
-const parseDateData = require("./parseDateData");
-const getWeatherData = require("./getWeatherData");
+require('dotenv').config();
+const fauna = require('faunadb');
+const getLocationsData = require('./getLocationsData');
+const parseWeatherData = require('./parseWeatherData');
+const parseDateData = require('./parseDateData');
+const getWeatherData = require('./getWeatherData');
 
 const fQuery = fauna.query;
 const fClient = new fauna.Client({
@@ -21,19 +21,23 @@ module.exports = async () => {
         getWeatherData
           .getData({ date: dateStamp.epoch, lat, long })
           .then((weatherData) => {
-            const temp = parseWeatherData(weatherData);
+            const parsedLocationData = parseWeatherData(weatherData);
             const successMessage = `--- SUCCESS: getWeatherData()\n------ name: ${name}\n------ dateStamp.epoch: ${dateStamp.epoch}\n\n`;
             console.log(successMessage);
 
             fClient
               .query(
-                fQuery.Update(fQuery.Ref(fQuery.Collection("locations"), id), {
+                fQuery.Update(fQuery.Ref(fQuery.Collection('locations'), id), {
                   data: {
                     history: [
-                      ...history.filter((day) => day.date !== dateStamp.pretty),
+                      ...history.filter(
+                        (day) => day.date !== dateStamp.formatted
+                      ),
                       {
-                        date: dateStamp.pretty,
-                        temp,
+                        date: dateStamp.formatted,
+                        pressure: parsedLocationData.pressure,
+                        temp: parsedLocationData.temp,
+                        wind: parsedLocationData.wind
                       },
                     ],
                   },
@@ -46,7 +50,7 @@ module.exports = async () => {
           })
           .catch((error) => {
             const errorMessage = `--- ERROR: getWeatherData:\n------ locationName: ${name}\n`;
-            console.error(errorMessage, error, "\n\n");
+            console.error(errorMessage, error, '\n\n');
           });
       });
     })

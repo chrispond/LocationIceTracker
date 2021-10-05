@@ -1,0 +1,5 @@
+{
+  "ignoreTestFiles": "**/!(*.spec.js)",
+  "integrationFolder": "src/utils",
+  "video": false
+}

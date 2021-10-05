@@ -11,7 +11,8 @@
     "build:styleguide": "cross-env NODE_ENV=prod gulp build",
     "dev:site": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
     "dev:styleguide": "gulp serve",
-    "update": "cross-env node index --update"
+    "update": "cross-env node index --update",
+    "test:unit": "./node_modules/.bin/cypress run"
   },
   "repository": {
     "type": "git",
