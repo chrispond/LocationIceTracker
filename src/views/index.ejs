@@ -7,9 +7,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="<%= rootPath %>public/styles/global.css" />
   </head>
 
   <body>
-    Hello Worldy
+    <div id="page-wrapper">
+      <main role="main">
+        <section class="bg-white">
+          <% locationData.forEach(location => { 
+            const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const iceThickness = utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset);
+          %>
+            <h2><%= location.name %></h2>
+            <p>&#8776;<%= iceThickness%>&Prime; ice thickeness</p>
+            <div class="cp-carousel">
+              <div class="cp-carousel-wrapper">
+                <ul class="cp-carousel-slider">
+                  <% descendingHistory.forEach(date => {
+                    const prettDate = utils.prettyDate(date.date); %>
+                  
+                  <li aria-label="<%= `${ prettDate.day} ${ prettDate.month} ${ prettDate.date}, ${ prettDate.year}`%> ice report" role="listitem" class="cp-carousel-slider-slide">
+                    <article>
+                      <h3>
+                        <time datetime="<%= date.date %>">
+                          <%= `${ prettDate.month} ${ prettDate.year}`%><br /><%= `${ prettDate.day} ${ prettDate.date}`%>
+                        </time>
+                      </h3>
+                      <p class="ice-formation">
+                      <% if (date.temp.average > 32 && iceThickness > 0) { %>
+                        -<%= utils.iceThaw(date.temp.average)%>&Prime; <span class="a11y">Inches of ice loss</span>
+                      <% } else if (date.temp.average < 32) { %>
+                        +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
+                      <% } %>
+                      </p>
+                      <div class="weather-group">
+                        <h4 class="weather-title">Daily Temps</h4>
+                        <p class="temps">
+                          <span class="weather-label" aria-label="high temperature of">High</span> <span class="weather-value <%= !utils.isFreezing(date.temp.high) ? 'thawing' : ''%>"><%= date.temp.high.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                          <span class="weather-label" aria-label="low temperature of">Low</span> <span class="weather-value <%= !utils.isFreezing(date.temp.low) ? 'thawing' : ''%>"><%= date.temp.low.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                        </p>
+                      </div>
+
+                    </article>
+                  </li>
+
+                  <% }); %>
+                </ul>
+              </div>
+              <button aria-label="Previous Dates" class="cp-carousel-prev">Previous Dates</button>
+              <button aria-label="Next Dates" class="cp-carousel-next">Next Dates</button>
+              <div aria-live="polite" class="a11y cp-carousel-a11y-live"></div>
+            </div>
+          <% }); %>
+        </section>
+        <div class="footer">&copy; <%= utils.currentYear %> Chris Pond</div>
+      </main>
+    </div>
+    <script src="<%= rootPath %>public/scripts/global.js"></script>
   </body>
 </html>
