@@ -222,17 +222,43 @@
     }
   }
 
-  .temps {
-    font-weight: 700;
-    color: $blue;
-  }
-  .temp-title {
-    color: $blue;
-    font-weight: 400;
-  }
-  .temp-unit,
-  .temp-label {
-    color: $black;
-    font-weight: 400;
+  .weather {
+    &-group {
+      margin-bottom: calc(1rem - 0.5rem);
+      padding-bottom: 1rem;
+      position: relative;
+
+      &::after {
+        content: '';
+        width: 33%;
+        height: 0.01rem;
+        position: absolute;
+        bottom: 0;
+        transform: translate(-50%, -50%);
+        background: $light-blue;
+      }
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+    &-title {
+      color: $blue;
+      font-weight: 400;
+    }
+    &-label,
+    &-suffix {
+      color: $black;
+      font-weight: 400;
+    }
+    &-value {
+      margin-bottom: 0;
+      font-weight: 700;
+      color: $blue;
+
+      &.thawing {
+        color: $thawing;
+      }
+    }
   }
 }

@@ -5,9 +5,9 @@ const browserify = require('browserify');
 const browserSync = require('browser-sync');
 const buffer = require('vinyl-buffer');
 const gulpif = require('gulp-if');
-const gutil = require('gulp-util');
+const gutil = require('fancy-log');
 const injectPartials = require('gulp-inject-partials');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const source = require('vinyl-source-stream');
 const template = require('gulp-template-html');
 const uglify = require('gulp-uglify');
@@ -28,10 +28,10 @@ const env = {
   DEV: 'dev',
   PROD: 'prod',
 };
-const envVar = process.env.NODE_ENV || env.DEV;
+// const envVar = process.env.NODE_ENV || env.DEV;
+const envVar = process.env.NODE_ENV || env.PROD;
 const outputDir = envVar === env.PROD ? distDir : `${buildDir}development/`;
 const sassOutput = envVar === env.PROD ? 'compressed' : 'expanded';
-sass.compiler = require('node-sass');
 
 const htmlBuild = (callback) => {
   // Build Components
@@ -65,7 +65,7 @@ const scriptsCompile = (callback) => {
   })
     .transform(babelify, { presets: ['@babel/preset-env'] })
     .bundle()
-    .on('error', gutil.log)
+    .on('error', (error) => {gutil.log(error)})
     .pipe(source('global.js'))
     .pipe(buffer())
     .pipe(gulpif(env === env.PROD, uglify()))
@@ -75,7 +75,8 @@ const scriptsCompile = (callback) => {
 
 const stylesCompile = (callback) => {
   src(`${srcDir}base/sass/global.scss`)
-    .pipe(sass({ outputStyle: sassOutput }).on('error', sass.logError))
+    .pipe(sass({ outputStyle: sassOutput })
+    .on('error', sass.logError))
     .pipe(dest(`${outputDir}styles/`))
     .on('end', () => callback());
 };

@@ -1,14 +1,17 @@
-const { calcFreeze, calcThaw, calcThickness } = require('../calcFreezeThaw');
+const { calcFreeze, calcThaw, calcThickness, isFreezing } = require('../calcFreezeThaw/calcFreezeThaw');
 const getNumberOrdinal = require('./getNumberOrdinal/getNumberOrdinal');
 const getStringDay = require('./getStringDay/getStringDay');
 const getStringMonth = require('./getStringMonth/getStringMonth');
 
 module.exports = {
+  currentYear: new Date().getFullYear().toString(10),
   iceFreeze: (temp) => calcFreeze(temp).toFixed(1),
   iceThaw: (temp) => calcThaw(temp).toFixed(1),
-  iceThickness: (tempData, freezeOffset = 0) =>
-    (calcThickness([...tempData]) - freezeOffset).toFixed(1),
-  currentYear: new Date().getFullYear().toString(10),
+  iceThickness: (tempData, freezeOffset = 0) => {
+    const thickness = (calcThickness([...tempData])).toFixed(1);
+    return thickness > 0 ? thickness : 0;
+  },
+  isFreezing: (temp) => isFreezing(temp),
   prettyDate: (date) => {
     const dateObject = new Date(date);
 
