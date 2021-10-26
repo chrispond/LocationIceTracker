@@ -31,7 +31,32 @@
                           <%= `${ prettDate.month} ${ prettDate.year}`%><br /><%= `${ prettDate.day} ${ prettDate.date}`%>
                         </time>
                       </h3>
-
+                      <p class="ice-formation">
+                      <% if (date.temp.average > 32 && iceThickness > 0) { %>
+                        -<%= utils.iceThaw(date.temp.average)%>&Prime; <span class="a11y">Inches of ice loss</span>
+                      <% } else if (date.temp.average < 32) { %>
+                        +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
+                      <% } %>
+                      </p>
+                      <div class="weather-group">
+                        <h4 class="weather-title">Daily Temps</h4>
+                        <p class="temps">
+                          <span class="weather-label" aria-label="high temperature of">High</span> <span class="weather-value <%= !utils.isFreezing(date.temp.high) ? 'thawing' : ''%>"><%= date.temp.high.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                          <span class="weather-label" aria-label="low temperature of">Low</span> <span class="weather-value <%= !utils.isFreezing(date.temp.low) ? 'thawing' : ''%>"><%= date.temp.low.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                        </p>
+                      </div>
+                      <% if (date.pressure) { %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Pressure:</h4>
+                          <p class="weather-value"><%= date.pressure.average?.toFixed() || date.pressure.toFixed() %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
+                        </div>
+                      <% } %>
+                      <% if (date.wind) { %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Wind:</h4>
+                          <p class="weather-value"><%= Math.round((date.wind.average || date.wind.speed) * 1.60934) %><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span></p>
+                        </div>
+                      <% } %>
                     </article>
                   </li>
 
