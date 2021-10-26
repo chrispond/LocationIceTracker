@@ -16,9 +16,10 @@
         <section class="bg-white">
           <% locationData.forEach(location => { 
             const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const iceThickness = utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset);
           %>
             <h2><%= location.name %></h2>
-            <p>&#8776;<%= utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset)%>&Prime; ice thickeness</p>
+            <p>&#8776;<%= iceThickness%>&Prime; ice thickeness</p>
             <div class="cp-carousel">
               <div class="cp-carousel-wrapper">
                 <ul class="cp-carousel-slider">
@@ -33,17 +34,31 @@
                         </time>
                       </h3>
                       <p class="ice-formation">
-                      <% if (date.temp.average > 32) { %>
+                      <% if (date.temp.average > 32 && iceThickness > 0) { %>
                         -<%= utils.iceThaw(date.temp.average)%>&Prime; <span class="a11y">Inches of ice loss</span>
-                      <% } else { %>
+                      <% } else if (date.temp.average < 32) { %>
                         +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
                       <% } %>
                       </p>
-                      <h4 class="temp-title">Daily Temps</h4>
-                      <p class="temps">
-                        <span class="temp-label" aria-label="high temperature of">High</span> <%= date.temp.high.toFixed() %><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
-                        <span class="temp-label" aria-label="low temperature of">Low</span> <%= date.temp.low.toFixed() %><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
-                      </p>
+                      <div class="weather-group">
+                        <h4 class="weather-title">Daily Temps</h4>
+                        <p class="temps">
+                          <span class="weather-label" aria-label="high temperature of">High</span> <span class="weather-value <%= !utils.isFreezing(date.temp.high) ? 'thawing' : ''%>"><%= date.temp.high.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                          <span class="weather-label" aria-label="low temperature of">Low</span> <span class="weather-value <%= !utils.isFreezing(date.temp.low) ? 'thawing' : ''%>"><%= date.temp.low.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
+                        </p>
+                      </div>
+                      <% if (date.pressure) { %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Pressure:</h4>
+                          <p class="weather-value"><%= date.pressure.average?.toFixed() || date.pressure.toFixed() %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
+                        </div>
+                      <% } %>
+                      <% if (date.wind) { %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Wind:</h4>
+                          <p class="weather-value"><%= Math.round((date.wind.average || date.wind.speed) * 1.60934) %><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span></p>
+                        </div>
+                      <% } %>
                     </article>
                   </li>
 
