@@ -13,7 +13,6 @@ const calcThickness = (temps) => {
       ? calcFreeze(currentValue)
       : -calcThaw(currentValue);
     const thickness = parseFloat((amountOfFreeze + accumulator).toFixed(2));
-    console.log('*****', amountOfFreeze, thickness)
     return thickness < 0 ? 0 : thickness;
   }, 0);
 };

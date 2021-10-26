@@ -28,8 +28,7 @@ const env = {
   DEV: 'dev',
   PROD: 'prod',
 };
-// const envVar = process.env.NODE_ENV || env.DEV;
-const envVar = process.env.NODE_ENV || env.PROD;
+const envVar = process.env.NODE_ENV || env.DEV;
 const outputDir = envVar === env.PROD ? distDir : `${buildDir}development/`;
 const sassOutput = envVar === env.PROD ? 'compressed' : 'expanded';
 
