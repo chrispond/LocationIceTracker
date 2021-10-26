@@ -40,13 +40,6 @@
                         +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
                       <% } %>
                       </p>
-                      <div class="weather-group">
-                        <h4 class="weather-title">Daily Temps</h4>
-                        <p class="temps">
-                          <span class="weather-label" aria-label="high temperature of">High</span> <span class="weather-value <%= !utils.isFreezing(date.temp.high) ? 'thawing' : ''%>"><%= date.temp.high.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
-                          <span class="weather-label" aria-label="low temperature of">Low</span> <span class="weather-value <%= !utils.isFreezing(date.temp.low) ? 'thawing' : ''%>"><%= date.temp.low.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
-                        </p>
-                      </div>
 
                     </article>
                   </li>
