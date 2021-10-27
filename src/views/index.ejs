@@ -53,6 +53,14 @@
                           <p class="weather-value"><%= pressureAverage %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
                         </div>
                       <% } %>
+                      <% if (date.wind) { 
+                        const windAverage = Math.round((date.wind.average || date.wind.speed) * 1.60934);
+                      %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Wind:</h4>
+                          <p class="weather-value"><%= windAverage %><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span></p>
+                        </div>
+                      <% } %>
                     </article>
                   </li>
 
