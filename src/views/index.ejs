@@ -16,8 +16,10 @@
         <section class="bg-white">
           <% locationData.forEach(location => { 
             const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const iceThickness = utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset);
           %>
             <h2><%= location.name %></h2>
+            <p>&#8776;<%= iceThickness%>&Prime; ice thickeness</p>
             <div class="cp-carousel">
               <div class="cp-carousel-wrapper">
                 <ul class="cp-carousel-slider">
