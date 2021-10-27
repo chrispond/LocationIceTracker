@@ -46,7 +46,7 @@
                         </p>
                       </div>
                       <% if (date.pressure) { 
-                        const pressureAverage = date.pressure.average?.toFixed() || date.pressure.toFixed();
+                        const pressureAverage = date.pressure.average && date.pressure.average.toFixed() || date.pressure.toFixed();
                       %>
                         <div class="inline-children">
                           <h4 class="weather-title">Pressure:</h4>
