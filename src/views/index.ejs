@@ -15,9 +15,32 @@
       <main role="main">
         <section class="bg-white">
           <% locationData.forEach(location => { 
-
+            const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
           %>
             <h2><%= location.name %></h2>
+            <div class="cp-carousel">
+              <div class="cp-carousel-wrapper">
+                <ul class="cp-carousel-slider">
+                  <% descendingHistory.forEach(date => {
+                    const prettDate = utils.prettyDate(date.date); %>
+                  
+                  <li aria-label="<%= `${ prettDate.day} ${ prettDate.month} ${ prettDate.date}, ${ prettDate.year}`%> ice report" role="listitem" class="cp-carousel-slider-slide">
+                    <article>
+                      <h3>
+                        <time datetime="<%= date.date %>">
+                          <%= `${ prettDate.month} ${ prettDate.year}`%><br /><%= `${ prettDate.day} ${ prettDate.date}`%>
+                        </time>
+                      </h3>
+                    </article>
+                  </li>
+
+                  <% }); %>
+                </ul>
+              </div>
+              <button aria-label="Previous Dates" class="cp-carousel-prev">Previous Dates</button>
+              <button aria-label="Next Dates" class="cp-carousel-next">Next Dates</button>
+              <div aria-live="polite" class="a11y cp-carousel-a11y-live"></div>
+            </div>
           <% }); %>
         </section>
         <div class="footer">&copy; <%= utils.currentYear %> Chris Pond</div>
