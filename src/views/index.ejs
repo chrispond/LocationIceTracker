@@ -45,6 +45,12 @@
                           <span class="weather-label" aria-label="low temperature of">Low</span> <span class="weather-value <%= !utils.isFreezing(date.temp.low) ? 'thawing' : ''%>"><%= date.temp.low.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
                         </p>
                       </div>
+                      <% if (date.pressure) { %>
+                        <div class="inline-children">
+                          <h4 class="weather-title">Pressure:</h4>
+                          <p class="weather-value"><%= date.pressure.average?.toFixed() || date.pressure.toFixed() %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
+                        </div>
+                      <% } %>
                     </article>
                   </li>
 
