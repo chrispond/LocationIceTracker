@@ -34,7 +34,7 @@
                         </time>
                       </h3>
                       <p class="ice-formation">
-                      <% if (date.temp.average > 32) { %>
+                      <% if (date.temp.average > 32 && iceThickness > 0) { %>
                         -<%= utils.iceThaw(date.temp.average)%>&Prime; <span class="a11y">Inches of ice loss</span>
                       <% } else if (date.temp.average < 32) { %>
                         +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
