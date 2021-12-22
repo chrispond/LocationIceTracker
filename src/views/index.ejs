@@ -17,6 +17,7 @@
           <% locationData.forEach(location => { 
             const descendingHistory = location.history.sort((a, b) => new Date(b.date) - new Date(a.date));
             const iceThickness = utils.iceThickness(location.history.map(date => date.temp.average), location.freezeOffset);
+            const hasHighLowData = (data) => data.low && data.high;
           %>
             <h2><%= location.name %></h2>
             <p>&#8776;<%= iceThickness%>&Prime; ice thickeness</p>
@@ -40,7 +41,7 @@
                         +<%= utils.iceFreeze(date.temp.average)%>&Prime; <span class="a11y">Inches of ice formation</span>
                       <% } %>
                       </p>
-                      <div class="weather-group">
+                      <div class="weather-group weather-high-low">
                         <h4 class="weather-title">Daily Temps</h4>
                         <p class="temps">
                           <span class="weather-label" aria-label="high temperature of">High</span> <span class="weather-value <%= !utils.isFreezing(date.temp.high) ? 'thawing' : ''%>"><%= date.temp.high.toFixed() %></span><sup class="temp-unit" aria-label="°Fahrenheit">&deg;F</sup>
@@ -49,18 +50,44 @@
                       </div>
                       <% if (date.pressure) { 
                         const pressureAverage = date.pressure.average && date.pressure.average.toFixed() || date.pressure.toFixed();
-                      %>
-                        <div class="inline-children">
-                          <h4 class="weather-title">Pressure:</h4>
-                          <p class="weather-value"><%= pressureAverage %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
+                        const pressureHighLow = hasHighLowData(date.pressure);
+                        %>
+                        <div class="inline-children weather-average">
+                          <h4 class="weather-title">
+                            <% if (pressureHighLow) { %>
+                              <button class="weather-value-toggle" aria-label="">Pressure:</button>
+                            <% } else { %>
+                              Pressure:
+                            <% } %>
+                          </h4>
+                          <p class="weather-value-average"><%= pressureAverage %><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span></p>
+                          <% if (pressureHighLow) { %>
+                            <p class="weather-value-high-low">
+                              <span class="weather-label" aria-label="high pressure of">H</span> <span class="weather-value"><%= date.pressure.high.toFixed() %></span><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span>
+                              <span class="weather-label" aria-label="low pressure of">L</span> <span class="weather-value"><%= date.pressure.low.toFixed() %></span><span class="weather-suffix" aria-label="Hecto Pascals">hPa</span>
+                            </p>
+                          <% } %>
                         </div>
                       <% } %>
                       <% if (date.wind) { 
                         const windAverage = Math.round((date.wind.average || date.wind.speed) * 1.60934);
+                        const windHighLow = hasHighLowData(date.wind);
                       %>
-                        <div class="inline-children">
-                          <h4 class="weather-title">Wind:</h4>
+                        <div class="weather-high-low">
+                          <h4 class="weather-title">
+                            <% if (windHighLow) { %>
+                              <button class="weather-value-toggle" aria-label="">Wind:</button>
+                            <% } else { %>
+                              Wind:
+                            <% } %>
+                          </h4>
                           <p class="weather-value"><%= windAverage %><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span></p>
+                          <% if (windHighLow) { %>
+                            <p class="weather-value-high-low">
+                              <span class="weather-label" aria-label="high wind speed of">H</span> <span class="weather-value"><%= date.wind.high.toFixed() %></span><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span>
+                              <span class="weather-label" aria-label="low wind speed of">L</span> <span class="weather-value"><%= date.wind.low.toFixed() %></span><span class="weather-suffix" aria-label="Kilometers Per Hour">km/h</span>
+                            </p>
+                          <% } %>
                         </div>
                       <% } %>
                     </article>

@@ -223,7 +223,16 @@
   }
 
   .weather {
-    &-group {
+    &-average {
+      @extend .inline-children;
+
+      border: solid 1px red;
+
+      .weather-value-high-low {
+        display: none;
+      }
+    }
+    &-high-low {
       margin-bottom: calc(1rem - 0.5rem);
       padding-bottom: 1rem;
       position: relative;
@@ -240,6 +249,10 @@
 
       > *:last-child {
         margin-bottom: 0;
+      }
+
+      .weather-value-average {
+        display: none;
       }
     }
     &-title {
