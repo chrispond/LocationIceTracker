@@ -6,6 +6,9 @@ const locationsDataMiddleware = require("./middleware/locationsData");
 const methodOverride = require("method-override");
 const path = require("path");
 const serverless = require("serverless-http");
+const Rollbar = require('rollbar');
+const { rollbarOptions } = require('./utils');
+const rollbar = new Rollbar(rollbarOptions());
 
 const app = express();
 const router = express.Router();
@@ -23,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 app.use(locationsDataMiddleware);
+app.use(rollbar.errorHandler());
 
 // Routes
 router.use(require("./routes/index"));
