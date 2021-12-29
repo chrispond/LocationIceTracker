@@ -5,6 +5,7 @@ const getStringMonth = require('./getStringMonth/getStringMonth');
 
 module.exports = {
   currentYear: new Date().getFullYear().toString(10),
+  environment: process.env.NODE_ENV,
   iceFreeze: (temp) => calcFreeze(temp).toFixed(1),
   iceThaw: (temp) => calcThaw(temp).toFixed(1),
   iceThickness: (tempData, freezeOffset = 0) => {
