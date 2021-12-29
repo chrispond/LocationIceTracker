@@ -1,6 +1,9 @@
 // Dependancies
 require("dotenv").config();
 const fauna = require("faunadb");
+const Rollbar = require('rollbar');
+const { rollbarOptions } = require('./index');
+const rollbar = new Rollbar(rollbarOptions());
 
 const fQuery = fauna.query;
 const fClient = new fauna.Client({
@@ -16,8 +19,7 @@ module.exports = async () => {
       )
     )
     .catch((error) => {
-      const errorMessage = `--- ERROR: faunaDB.Get(collection: locations):\n------ Error: ${error.message}\n\n`;
-      console.error(errorMessage);
+      rollbar.critical(`getLocationsData: ${error}`);
     });
 
   return locations.data.map((location) => {

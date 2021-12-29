@@ -1,5 +1,8 @@
 require("dotenv").config();
 const axios = require("axios");
+const Rollbar = require('rollbar');
+const { rollbarOptions } = require('./index');
+const rollbar = new Rollbar(rollbarOptions());
 const requestUrl =
   "https://api.openweathermap.org/data/2.5/onecall/timemachine";
 
@@ -15,7 +18,9 @@ module.exports = {
           resolve(response);
         })
         .catch((error) => {
-          const errorMessage = `--- getWeatherData: Error\n------ postRequestUrl: ${postRequestUrl}\n------ Error: ${error.response.data.message}\n\n`;
+          rollbar.configure({payload: {location, postRequestUrl}})
+          rollbar.error(`getWeatherData.getData:  ${error}`);
+          const errorMessage = `getWeatherData.getData: ${error.response.data.message}`;
           reject(errorMessage);
         });
     }).then((locationData) => locationData);

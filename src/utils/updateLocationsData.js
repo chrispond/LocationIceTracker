@@ -2,9 +2,12 @@
 require('dotenv').config();
 const fauna = require('faunadb');
 const getLocationsData = require('./getLocationsData');
+const getWeatherData = require('./getWeatherData');
 const parseWeatherData = require('./parseWeatherData');
 const parseDateData = require('./parseDateData');
-const getWeatherData = require('./getWeatherData');
+const Rollbar = require('rollbar');
+const { rollbarOptions } = require('./index');
+const rollbar = new Rollbar(rollbarOptions());
 
 const fQuery = fauna.query;
 const fClient = new fauna.Client({
@@ -23,7 +26,7 @@ module.exports = async () => {
           .then((weatherData) => {
             const parsedLocationData = parseWeatherData(weatherData);
             const successMessage = `--- SUCCESS: getWeatherData()\n------ name: ${name}\n------ dateStamp.epoch: ${dateStamp.epoch}\n\n`;
-            console.log(successMessage);
+            rollbar.info(successMessage);
 
             fClient
               .query(
@@ -44,18 +47,14 @@ module.exports = async () => {
                 })
               )
               .catch((error) => {
-                const errorMessage = `--- ERROR: faunaDB.Update(collection: locations, id: ${id}):\n------ locationName: ${name}\n------ Error: ${error.message}\n\n`;
-                console.error(errorMessage);
+                rollbar.configure({payload: {dataTableId: id, LocationnName: name}})
+                rollbar.error(`updateLocationsData: Attempt to query faunadb: ${error}`);
               });
           })
           .catch((error) => {
-            const errorMessage = `--- ERROR: getWeatherData:\n------ locationName: ${name}\n`;
-            console.error(errorMessage, error, '\n\n');
+            rollbar.configure({payload: {LocationnName: name}})
+            rollbar.error(`updateLocationsData: Attempt to getWeatherData ${error}`);
           });
       });
-    })
-    .catch((error) => {
-      const errorMessage = `--- ERROR: getLocationsData:\n------ ${error}\n\n`;
-      console.error(errorMessage);
     });
 };

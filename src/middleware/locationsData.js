@@ -1,4 +1,7 @@
 const getLocationsData = require('../utils/getLocationsData');
+const Rollbar = require('rollbar');
+const { rollbarOptions } = require('../utils');
+const rollbar = new Rollbar(rollbarOptions());
 
 module.exports = (request, response, next) => {
   getLocationsData()
@@ -7,6 +10,6 @@ module.exports = (request, response, next) => {
       next();
     })
     .catch((error) => {
-      next(`locationsDataMiddleware: ${error}`);
+      rollbar.critical(`locationsDataMiddleware: ${error}`, request);
     });
 };

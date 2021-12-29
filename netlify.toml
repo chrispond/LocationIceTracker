@@ -12,4 +12,5 @@
 
 [template.environment]
   FAUNADB_SERVER_SECRET = "Your FaunaDB server Secret"
-  WEATHER_KEY = "Your Open Weather Map api key" 
+  WEATHER_KEY = "Your Open Weather Map api key"
+  ROLLBAR_BE_ACCESS_TOKEN = "Your backend node.js rollbar access token"
